@@ -98,15 +98,20 @@ userSchema.methods.generateToken = function (cb) {
   });
 };
 
+//auth 미들웨어에서 사용되는 메서드.
 userSchema.statics.findByToken = function (token, cb) {
   var user = this;
 
-  //토큰을 decode한다.
-  jwt.verify(token, "secretToken", function (err, decoded) {
+  //토큰을 decode(복호화) 한다.
+  //user._id + 'secretToken'을 이용해서 만들었으므로, 가운데에는 secretToken이 들어감.
+  jwt.verify(token, "secretToken", function (err, decoded) { //복호화된 유저id가 decoded에 들어감.
     //유저 아이디를 이용해서 유저를 찾은 다음에
     //클라이언트에서 가져온 토큰과 DB에 보관된 토큰이 일치하는지 확인
+    //findOne -> mongoDB의 메서드임. (유저 아이디와 토큰으로 해당 유저를 찾음.)
     user.findOne({ _id: decoded, token: token }, function (err, user) {
+      //에러가 있다면 콜백으로 에러를 전달.
       if (err) return cb(err);
+      //에러가 없다면 찾은 유저 정보를 전달함.
       cb(null, user);
     });
   });

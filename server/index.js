@@ -4,7 +4,7 @@ const port = 5000; //백엔드 서버 포트 번호.
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser"); //쿠키를 사용하기 위해 쿠키파서 라이브러리 사용.
 const config = require("./config/key");
-const { auth } = require("./middleware/auth");
+const { auth } = require("./middleware/auth"); //미들웨어. (유저 권한 확인)
 const { User } = require("./models/User");
 
 /*  bodyparser의 옵션을 주는 부분 start */
@@ -89,7 +89,11 @@ app.post("/api/users/login", (req, res) => {
 
 //endpoint로 가기 전에 미들웨어 auth에서 중간처리 이후 콜백함수를 부름.
 app.get("/api/users/auth", auth, (req, res) => {
+  //아래 정보는 미들웨어 auth에서 
+  //req에 유저정보와 토큰의 정보를 넣어두었음으로 req.user, req.token 이런식으로 사용이 가능함.
+  
   //여기까지 미들웨어를 통과해 왔다는 얘기는 authenication이 true 라는 것.
+  //통과를 못하고 에러가 난 경우 미들웨어에서 빠져나가게 되고 이쪽으로 들어오지 못함!
   res.status(200).json({
     _id: req.user._id,
     isAdmin: req.user.role === 0 ? false : true, //admin이 1, 일반사용자 0
@@ -102,12 +106,22 @@ app.get("/api/users/auth", auth, (req, res) => {
   });
 });
 
-app.get("/api/users/logout", auth, (req, res) => {
-  console.log('여기오나');
+//로그아웃 라우터.
+//로그아웃처리는?
+//로그아웃할 때 해당 유저의 DB안에 저장된 토큰정보를 지워준다.
+//토큰이 DB에 없다면, 클라이언트에서 가져온 토큰이랑 맞지 않게 되서 로그인 기능이 풀려버림.
+app.get("/api/users/logout", auth, (req, res) => { //로그인 된 상태에서 로그아웃 하므로 auth 미들웨어를 넣어주어야 한다.
+
+  //유저를 찾아서 토큰 데이터 업데이트 (삭제)함. 
+  //미들웨어에서 req.user 정보를 보내기 때문에 아래처럼 아이디를 받아올 수 있음.
   User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, user) => {
+    //에러가 난 경우.
     if (err) return res.json({ success: false, err });
+    //성공적으로 로그아웃 한 경우.
     return res.status(200).send({ success: true });
   });
 });
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
