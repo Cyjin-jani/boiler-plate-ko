@@ -1,3 +1,4 @@
+//유저 리듀서
 import { AUTH_USER, LOGIN_USER, REGISTER_USER } from "../_actions/types";
 
 export default function (state = {}, action) {

@@ -34,6 +34,7 @@ mongoose
 
 app.get("/", (req, res) => res.send("Hello World! ~~ 안녕하세요!!!"));
 
+//LandingPage에서 axios로 보냄.
 app.get("/api/hello", (req, res) => {
   res.send("안녕하십니까아아아아");
 });
