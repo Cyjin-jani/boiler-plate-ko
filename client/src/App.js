@@ -19,6 +19,7 @@ function App() {
         of them to render at a time
       */}
         <Switch>
+          {/* 모든 컴포넌트는 hoc인 auth를 거쳐가도록 함. */}
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />

@@ -19,20 +19,24 @@ export default function (SpecificComponent, option, adminRoute = null) {
     //true => 로그인한 유저만 출입이 가능한 페이지
     //false => 로그인한 유저는 출입 불가능한 페이지
 
+    //db백엔드에서 유저 정보를 불러옴. auth 액션 사용.
     useEffect(() => {
       dispatch(auth()).then((response) => {
         // console.log(response);
 
         //로그인 하지 않은 상태
         if (!response.payload.isAuth) {
+          //로그인 하지 않은 상태에서 로그인한 유저만 가능한 페이지로 이동하려고 할 경우, 로그인 페이지로 강제이동.
           if (option) {
             props.history.push("/login");
           }
         } else {
           //로그인한 상태
+          //어드민이 아닌 유저가 어드민라우터 true인 채로 들어가려고 할 경우도 막아줌.
           if (adminRoute && !response.payload.isAdmin) {
             props.history.push("/");
           } else {
+            //이미 로그인 한 유저가 출입 불가능한 페이지에 들어가려고 할 때(로그인, 회원가입 페이지 등)
             if (option === false) {
               props.history.push("/");
             }

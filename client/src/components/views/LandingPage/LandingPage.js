@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom"; //props의 history를 사용하기 위해 withRouter를 씀.
 
 function LandingPage(props) {
   
@@ -12,6 +12,7 @@ function LandingPage(props) {
     });
   }, []);
 
+  //로그아웃을 위한 핸들러.
   const onClickHandler = () => {
     axios.get(`/api/users/logout`).then((response) => {
       console.log(response);
