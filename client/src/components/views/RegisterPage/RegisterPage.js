@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../../_actions/user_action";
 import { withRouter } from "react-router-dom";
+import {Form, Input, Button} from 'antd'
 
 function RegisterPage(props) {
   //리덕스를 쓰기 위한 디스패치 사용.
@@ -63,25 +64,32 @@ function RegisterPage(props) {
         height: "100vh",
       }}
     >
-      <form
+      <Form
         style={{ display: "flex", flexDirection: "column" }}
         onSubmit={onSubmitHandler}
       >
-        <label>Email</label>
-        <input type="email" value={Email} onChange={onEmailHandler} />
-        <label>Name</label>
-        <input type="text" value={Name} onChange={onNameHandler} />
-        <label>PassWord</label>
-        <input type="password" value={Password} onChange={onPasswordHandler} />
-        <label>Confirm PassWord</label>
-        <input
+        {/* <label>Email</label> */}
+        <Form.Item
+          name="email"
+          label="E-mail"
+          rules={[{type: 'email', message: '유효한 이메일이 아닙니다.'},{required: true, message:'이메일을 입력해 주세요.'}]}
+        >
+          <Input />
+        </Form.Item>
+        <Input type="email" value={Email} onChange={onEmailHandler} />
+        {/* <label>Name</label> */}
+        <Input type="text" value={Name} onChange={onNameHandler} />
+        {/* <label>PassWord</label> */}
+        <Input type="password" value={Password} onChange={onPasswordHandler} />
+        {/* <label>Confirm PassWord</label> */}
+        <Input
           type="password"
           value={ConfirmPassword}
           onChange={onConfirmPasswordHandler}
         />
         <br />
-        <button type="submit">회원가입</button>
-      </form>
+        <Button type="submit" >회원가입</Button>
+      </Form>
     </div>
   );
 }
